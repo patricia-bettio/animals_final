@@ -3,6 +3,7 @@
 window.addEventListener("DOMContentLoaded", start);
 
 let allAnimals = [];
+//store all animals marked as winners by the user:
 let winners = [];
 const settings = {
     filter: null,
@@ -85,7 +86,8 @@ function displayAnimal( animal ) {
 
     // TODO: Add event listener to click on star
     clone.querySelector("[data-field=winner]").addEventListener("click", function(){
-        showWinner(animal);
+        maxTwo(animal);
+        differentType(animal);
     })
 
     // TODO: Display winner
@@ -98,43 +100,89 @@ function displayAnimal( animal ) {
     clone.querySelector("[data-field=age]").textContent = animal.age;
 
     // TODO: Add event listeners for star and winner
+    
 
     // append clone to list
     document.querySelector("#list tbody").appendChild( clone );
 }
 
-function showWinner(animal){
+function maxTwo(animal){
+      
+    //WINNER LENTGH SELECTION
+    console.log(winners.length)
+    if (winners.length>1){
+        console.log("more than 2 selected")
+        document.querySelector("#onlytwowinners").classList.add("show");
+        console.log(winners)
+        document.querySelector("#onlytwowinners .animal1").textContent = `${winners[0].name}, the ${winners[0].type}`;
+        document.querySelector("#onlytwowinners .animal2").textContent = `${winners[1].name}, the ${winners[1].type}`;
+        document.querySelector("#onlytwowinners [data-action=remove1]").addEventListener("click", function() {
+            console.log(winners[0])
+            //sets to false the animal to be removed:
+            winners[0].winner = false;
+            //selects the animal user is clicking now:
+            animal.winner= true;
+            displayList(allAnimals)
+            document.querySelector("#onlytwowinners").classList.remove("show")
+        }) 
+        document.querySelector("#onlytwowinners [data-action=remove2]").addEventListener("click", function() {
+            console.log(winners[1])
+            //sets to false the animal to be removed:
+            winners[1].winner = false;
+            //selects the animal user is clicking now:
+            animal.winner= true;
+            displayList(allAnimals)
+            document.querySelector("#onlytwowinners").classList.remove("show")
+        }) 
+    }
+
+}
+
+function differentType(animal){
+    //WINNER TYPE SELECTION
     if (animal.winner){
-            console.log("this animal is NOT A WINNER")
-        animal.winner = false;
-        console.log(animal)
+    //console.log("this animal is NOT A WINNER")
+    animal.winner = false;
+    //console.log(animal)
     } else {
-/* 
-        if (winners[0].type != animal.type){ 
-       
-        } */
-        console.log("this animal is a WINNER")
+    //console.log("this animal is a WINNER")
         function checkType(x){
             return x.type === animal.type;
         }
+    //
+    if (winners.some(checkType) == false) {
+    //console.log("animal type not there");
+    animal.winner = true;
+    } else {
+    console.log("animal type IS there");
+    document.querySelector("#onlyonekind").classList.add("show")
+    //find the one that has the same type
+    //console.log(winners[0].winner)
+    document.querySelector("#onlyonekind .animal1").textContent = `${winners[0].name}, the ${winners[0].type}`;
+    
+    document.querySelector("#onlyonekind [data-action=remove1]").addEventListener("click", function() {
+    console.log(winners[0])
+    //give the value False to the duplicate that has to be removed:
+    winners[0].winner = false
+    animal.winner = true;
+    //exclude the repeated animal:
+    //console.log(winners.splice(winners[0].winner))
+    displayList(allAnimals);
+    document.querySelector("#onlyonekind").classList.remove("show")  
+    })
 
-
-        if (winners.some(checkType) == false) {
-           console.log("animal type not there");
-            animal.winner = true;
-        } else {
-            console.log("animal type IS there");
-            document.querySelector("#onlyonekind").classList.add("show")
-            console.log((checkType)==false)
-            console.log(winners.splice())
-            //document.querySelector("[data-action=remove1]").addEventListener("click", removeOne);
-
-
-        }
-        winners = allAnimals.filter(animals=> animals.winner == true);
-  
-       console.log(winners)
+    document.querySelector("#onlyonekind .closebutton").addEventListener("click", function () {
+    console.log("closing test")
+    document.querySelector("#onlyonekind").classList.remove("show")
+    })            
+    
+    displayList(allAnimals);
+    }
+             
+    winners = allAnimals.filter(animals=> animals.winner == true);
        
     }
+  
     buildList()
 }
+
